@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Inventario Automobili Group</title>
+    
+    <!-- Soporte PWA e iOS Móvil -->
+    <meta name="theme-color" content="#450a0a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="Icono.png">
+    <link rel="manifest" href="manifest.json">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Librerías de lectura de Datos -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { 50: '#fef2f2', 900: '#450a0a', 950: '#1c0202' }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-full flex flex-col font-sans selection:bg-red-800 selection:text-white">
+
+    <!-- BARRA SUPERIOR ROJO OSCURO PREMIUM -->
+    <header class="sticky top-0 z-40 bg-gradient-to-r from-red-950 via-red-900 to-rose-950 border-b border-red-900/40 shadow-xl">
+        <div class="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <!-- LOGO DE LA AGENCIA (Icono.png) -->
+                <div class="bg-white p-1 rounded-xl shadow-inner flex items-center justify-center overflow-hidden w-12 h-12 border border-red-800/20 shrink-0">
+                    <img src="Icono.png" alt="Logo AG" class="w-full h-full object-contain" onerror="this.src='https://placehold.co/100x100/ffffff/450a0a?text=AG'">
+                </div>
+                <div>
+                    <h1 class="text-lg font-black tracking-wider text-white flex items-center gap-2">
+                        AUTOMOBILI <span class="bg-red-600/30 text-red-200 text-xxs font-bold px-2 py-0.5 rounded border border-red-500/30">GESTOR</span>
+                    </h1>
+                    <p class="text-xs text-red-200/70 font-medium">Panel Conectado a Google Drive</p>
+                </div>
+            </div>
+
+            <!-- Botones de Acción de la Barra -->
+            <div class="flex items-center gap-2">
+                <button onclick="fetchFromGoogleSheets()" class="flex items-center gap-1.5 bg-emerald-700 hover:bg-emerald-600 text-white px-3 py-2 rounded-xl text-xs font-bold shadow-lg shadow-emerald-900/30 transition-all active:scale-95">
+                    <svg id="syncIcon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.253 8H18"></path></svg>
+                    <span>Sincronizar Drive</span>
+                </button>
+                
+                <!-- Botón de instalación PWA -->
+                <button id="pwaInstallBtn" class="hidden flex items-center gap-1.5 bg-amber-600 hover:bg-amber-500 text-white px-3 py-2 rounded-xl text-xs font-bold shadow-lg transition-all">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                    <span>Instalar App</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 py-6 flex flex-col gap-6">
+        
+        <!-- Estado de Sincronización -->
+        <div id="syncStatus" class="text-center text-xs text-slate-400 bg-slate-800/40 py-1.5 rounded-xl border border-slate-800 hidden">
+            Cargando inventario desde Drive en tiempo real...
+        </div>
+
+        <!-- DASHBOARD DE ESTADÍSTICAS -->
+        <section id="dashboard" class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="bg-slate-800/80 backdrop-blur p-4 rounded-2xl border border-slate-700 flex items-center gap-3">
+                <div class="p-3 bg-red-950 text-red-400 rounded-xl border border-red-900/30">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                </div>
+                <div>
+                    <p class="text-xxs text-slate-400 font-bold uppercase tracking-wider">Total Flota</p>
+                    <h3 id="statTotalStock" class="text-xl font-black text-white">0</h3>
+                </div>
+            </div>
+            <div class="bg-slate-800/80 backdrop-blur p-4 rounded-2xl border border-slate-700 flex items-center gap-3">
+                <div class="p-3 bg-emerald-950 text-emerald-400 rounded-xl border border-emerald-900/30">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                </div>
+                <div>
+                    <p class="text-xxs text-slate-400 font-bold uppercase tracking-wider">Disponibles</p>
+                    <h3 id="statAvailable" class="text-xl font-black text-emerald-400">0</h3>
+                </div>
+            </div>
+            <div class="bg-slate-800/80 backdrop-blur p-4 rounded-2xl border border-slate-700 flex items-center gap-3">
+                <div class="p-3 bg-amber-950 text-amber-400 rounded-xl border border-amber-900/30">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                </div>
+                <div>
+                    <p class="text-xxs text-slate-400 font-bold uppercase tracking-wider">Señados</p>
+                    <h3 id="statSeñado" class="text-xl font-black text-amber-400">0</h3>
+                </div>
+            </div>
+            <div class="bg-slate-800/80 backdrop-blur p-4 rounded-2xl border border-slate-700 flex items-center gap-3">
+                <div class="p-3 bg-slate-950 text-slate-400 rounded-xl border border-slate-900/30">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
+                </div>
+                <div>
+                    <p class="text-xxs text-slate-400 font-bold uppercase tracking-wider">Vendidos</p>
+                    <h3 id="statVendido" class="text-xl font-black text-slate-400">0</h3>
+                </div>
+            </div>
+        </section>
+
+        <!-- FILTROS Y BUSCADOR -->
+        <section class="bg-slate-800 p-4 rounded-2xl border border-slate-700 shadow-md">
+            <div class="flex flex-col md:flex-row gap-3">
+                <div class="relative flex-1">
+                    <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                    </span>
+                    <input type="text" id="filterSearch" oninput="applyFilters()" placeholder="Buscar por modelo, patente..." class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-700 bg-slate-900 focus:outline-none focus:ring-2 focus:ring-red-700 transition-all text-sm text-white">
+                </div>
+                <div>
+                    <select id="filterState" onchange="applyFilters()" class="w-full md:w-auto px-4 py-2.5 rounded-xl border border-slate-700 bg-slate-900 focus:outline-none focus:ring-2 focus:ring-red-700 text-sm text-slate-200">
+                        <option value="">Todos los estados</option>
+                        <option value="DISPONIBLE">Disponibles</option>
+                        <option value="SEÑADO">Señados</option>
+                        <option value="VENDIDO">Vendidos</option>
+                    </select>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN DE INVENTARIO -->
+        <section class="bg-slate-800 rounded-2xl border border-slate-700 overflow-hidden shadow-lg">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-slate-900/50 text-slate-400 text-xxs font-extrabold uppercase tracking-wider border-b border-slate-700">
+                            <th class="py-4 px-4">Modelo / Patente</th>
+                            <th class="py-4 px-4 hidden md:table-cell">Año / KM</th>
+                            <th class="py-4 px-4">Precio / Anticipo</th>
+                            <th class="py-4 px-4 text-center">Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody id="inventoryTableBody" class="divide-y divide-slate-700/60 text-sm">
+                        <!-- Se llena dinámicamente -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <div id="emptyState" class="hidden text-center py-12 text-slate-500 flex flex-col items-center justify-center">
+                <svg class="w-12 h-12 mb-2 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0a2 2 0 01-2 2H6a2 2 0 01-2-2m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-4V8h4m-4 5V8h-4v5m0 0H8V8h4v5"></path></svg>
+                <p class="font-bold">No hay vehículos registrados en este criterio.</p>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Enlace de Google Sheets corregido para descargar datos puros en CSV automáticamente
+        const RAW_SHEETS_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQORo28KTjF7UmB-SK7euLsHREMA3-0lJD7luc8mPvjHwDttO6KZS_Rqi2cxZlnew/pubhtml";
+        const GOOGLE_SHEETS_CSV_URL = RAW_SHEETS_URL.replace("/pubhtml", "/pub?output=csv");
+
+        let stock = [];
+
+        window.addEventListener('DOMContentLoaded', () => {
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('sw.js')
+                    .then(() => console.log("Service Worker Activo"))
+                    .catch(err => console.log("Error de SW: ", err));
+            }
+
+            // Primero cargar lo último que quedó en memoria local para que abra instantáneo
+            const savedStock = localStorage.getItem('ag_inventario_stock');
+            if (savedStock) {
+                stock = JSON.parse(savedStock);
+                calculateDashboard();
+                renderStock(stock);
+            }
+            
+            // Inmediatamente ir a buscar los datos frescos a Google Drive de forma invisible
+            fetchFromGoogleSheets();
+        });
+
+        function fetchFromGoogleSheets() {
+            if (!GOOGLE_SHEETS_CSV_URL || GOOGLE_SHEETS_CSV_URL.includes("TU_ENLACE")) {
+                console.log("Falta configurar el enlace de Google Sheets.");
+                return;
+            }
+
+            const statusDiv = document.getElementById('syncStatus');
+            const syncIcon = document.getElementById('syncIcon');
+            
+            statusDiv.classList.remove('hidden');
+            if(syncIcon) syncIcon.classList.add('animate-spin');
+
+            Papa.parse(GOOGLE_SHEETS_CSV_URL, {
+                download: true,
+                header: true,
+                skipEmptyLines: true,
+                complete: function(results) {
+                    statusDiv.classList.add('hidden');
+                    if(syncIcon) syncIcon.classList.remove('animate-spin');
+                    processRawData(results.data);
+                },
+                error: function(err) {
+                    statusDiv.innerText = "Error al conectar con Drive. Mostrando datos locales.";
+                    if(syncIcon) syncIcon.classList.remove('animate-spin');
+                    console.error(err);
+                }
+            });
+        }
+
+        function processRawData(rows) {
+            stock = rows.map((row, i) => {
+                const getVal = (names) => {
+                    const match = Object.keys(row).find(k => names.includes(k.trim().toUpperCase()));
+                    return match ? row[match] : "";
+                };
+
+                let modeloTexto = getVal(["MODELO", "VEHICULO", "VEHÍCULO"]);
+                if (!modeloTexto) return null;
+
+                let precio = parseFloat(String(getVal(["PRECIO", "PRECIO TOTAL", "VALOR"])).replace(/[^0-9]/g, '')) || 0;
+                let anticipo = parseFloat(String(getVal(["ANTICIPO", "ANTICIPO SUGERIDO", "MINIMO ANTICIPO"])).replace(/[^0-9]/g, '')) || 0;
+                let anio = parseInt(getVal(["AÑO", "ANIO", "MODELO_AÑO"])) || 2010;
+                let km = parseInt(String(getVal(["KILOMETROS", "KM", "KILÓMETROS"])).replace(/[^0-9]/g, '')) || 0;
+
+                // Limpieza inteligente del estado de disponibilidad
+                let rawEstado = (getVal(["DISPONIBILIDAD", "ESTADO", "SITUACION"]) || "DISPONIBLE").toUpperCase().trim();
+                let estadoFinal = "DISPONIBLE";
+                if (rawEstado === "SEÑADO" || rawEstado === "S") {
+                    estadoFinal = "SEÑADO";
+                } else if (rawEstado === "VENDIDO" || rawEstado === "V") {
+                    estadoFinal = "VENDIDO";
+                }
+
+                return {
+                    id: `car-${i}`,
+                    modelo: modeloTexto.toUpperCase(),
+                    patente: (getVal(["PATENTE", "DOMINIO"]) || `S/P-${i}`).toUpperCase().trim(),
+                    combustible: (getVal(["COMBUSTIBLE"]) || "NAFTA").toUpperCase(),
+                    anio: anio,
+                    kilometros: km,
+                    precio: precio,
+                    anticipo: anticipo,
+                    disponibilidad: estadoFinal
+                };
+            }).filter(c => c !== null && c.modelo !== "");
+
+            localStorage.setItem('ag_inventario_stock', JSON.stringify(stock));
+            calculateDashboard();
+            applyFilters();
+        }
+
+        function calculateDashboard() {
+            document.getElementById('statTotalStock').innerText = stock.length;
+            document.getElementById('statAvailable').innerText = stock.filter(c => c.disponibilidad === "DISPONIBLE").length;
+            document.getElementById('statSeñado').innerText = stock.filter(c => c.disponibilidad === "SEÑADO").length;
+            document.getElementById('statVendido').innerText = stock.filter(c => c.disponibilidad === "VENDIDO").length;
+        }
+
+        function renderStock(carsToRender) {
+            const tbody = document.getElementById('inventoryTableBody');
+            const emptyState = document.getElementById('emptyState');
+            tbody.innerHTML = "";
+
+            if (carsToRender.length === 0) {
+                emptyState.classList.remove('hidden');
+                return;
+            }
+            emptyState.classList.add('hidden');
+
+            carsToRender.forEach(car => {
+                let rowBg = "hover:bg-slate-800/40";
+                let badgeText = "DISPONIBLE";
+                let badgeClass = "bg-emerald-950 text-emerald-400 border border-emerald-800/50";
+                
+                if (car.disponibilidad === "SEÑADO") {
+                    badgeText = "SEÑADO";
+                    badgeClass = "bg-amber-950 text-amber-400 border border-amber-800/50";
+                } else if (car.disponibilidad === "VENDIDO") {
+                    badgeText = "VENDIDO";
+                    badgeClass = "bg-slate-900 text-slate-500 border border-slate-800";
+                    rowBg = "bg-slate-900/30 text-slate-500 line-through decoration-slate-700";
+                }
+
+                const tr = document.createElement('tr');
+                tr.className = `border-b border-slate-800 transition-colors ${rowBg}`;
+                tr.innerHTML = `
+                    <td class="py-3 px-4">
+                        <div class="font-bold text-white">${car.modelo}</div>
+                        <div class="font-mono text-xs text-slate-400 mt-0.5 flex items-center gap-2">
+                            <span class="bg-slate-900 px-1.5 py-0.5 rounded border border-slate-700">${car.patente}</span>
+                            <span class="md:hidden">• ${car.anio} • ${car.kilometros.toLocaleString()} km</span>
+                        </div>
+                    </td>
+                    <td class="py-3 px-4 hidden md:table-cell">
+                        <div class="font-semibold text-slate-200">${car.anio}</div>
+                        <div class="text-xs text-slate-400">${car.kilometros.toLocaleString()} km • ${car.combustible}</div>
+                    </td>
+                    <td class="py-3 px-4">
+                        <div class="font-black text-white">$${car.precio.toLocaleString('es-AR')}</div>
+                        <div class="text-xs text-slate-400">Ant: $${car.anticipo.toLocaleString('es-AR')}</div>
+                    </td>
+                    <td class="py-3 px-4 text-center">
+                        <span class="inline-block px-2.5 py-1 text-xxs font-extrabold rounded-md ${badgeClass}">
+                            ${badgeText}
+                        </span>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function applyFilters() {
+            const q = document.getElementById('filterSearch').value.toLowerCase().trim();
+            const state = document.getElementById('filterState').value;
+
+            const res = stock.filter(c => {
+                const matchQ = c.modelo.toLowerCase().includes(q) || c.patente.toLowerCase().includes(q);
+                const matchS = !state || c.disponibilidad === state;
+                return matchQ && matchS;
+            });
+
+            renderStock(res);
+        }
+
+        // Instalación PWA
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            document.getElementById('pwaInstallBtn').classList.remove('hidden');
+        });
+
+        document.getElementById('pwaInstallBtn').addEventListener('click', () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        document.getElementById('pwaInstallBtn').classList.add('hidden');
+                    }
+                    deferredPrompt = null;
+                });
+            }
+        });
+    </script>
+</body>
+</html>
