@@ -6,11 +6,11 @@
     <link rel="icon" type="image/jpeg" href="https://i.postimg.cc/44D1NW6Q/Icono.png">
     <title>Inventario Automobili Group</title>
     
-    <meta name="theme-color" content="#1e0505">
+    <meta name="theme-color" content="#0f172a">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="apple-touch-icon" href="Icono.png">
-    <link rel="manifest" href="manifest.json">
+    <link class="manifest" href="manifest.json">
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
@@ -28,15 +28,14 @@
         }
     </script>
     <style>
-        /* Ajuste fino para ocultar barras de scroll manteniendo funcionalidad */
+        /* Ocultar barras de scroll manteniendo funcionalidad */
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
-<body class="bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-900 via-purple-950/10 to-slate-950 text-slate-100 min-h-full flex flex-col font-sans antialiased selection:bg-red-700 selection:text-white">
+<body class="bg-slate-950 text-slate-100 min-h-full flex flex-col font-sans antialiased selection:bg-red-700 selection:text-white">
 
-    <!-- HEADER PREMIUM -->
-    <header class="sticky top-0 z-40 bg-slate-950/70 backdrop-blur-md border-b border-white/5 shadow-2xl">
+    <header class="sticky top-0 z-40 bg-slate-900/80 backdrop-blur-md border-b border-white/5 shadow-2xl">
         <div class="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
             <div class="flex items-center gap-3.5">
                 <div class="bg-gradient-to-br from-white to-slate-100 p-0.5 rounded-2xl shadow-xl flex items-center justify-center overflow-hidden w-12 h-12 border border-white/10 shrink-0">
@@ -70,9 +69,8 @@
             Cargando inventario desde Drive en tiempo real...
         </div>
 
-        <!-- DASHBOARD TABLERO DIGITAL -->
         <section id="dashboard" class="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div class="bg-slate-900/40 backdrop-blur-md p-4 rounded-2xl border border-white/5 flex items-center gap-3.5 shadow-xl">
+            <div class="bg-slate-900/60 backdrop-blur-md p-4 rounded-2xl border border-white/5 flex items-center gap-3.5 shadow-xl">
                 <div class="p-3 bg-slate-800/60 text-slate-300 rounded-xl border border-white/5 shadow-inner">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
                 </div>
@@ -81,7 +79,7 @@
                     <h3 id="statTotalStock" class="text-2xl font-black text-white mt-0.5 tracking-tight">0</h3>
                 </div>
             </div>
-            <div class="bg-slate-900/40 backdrop-blur-md p-4 rounded-2xl border border-white/5 flex items-center gap-3.5 shadow-xl">
+            <div class="bg-slate-900/60 backdrop-blur-md p-4 rounded-2xl border border-white/5 flex items-center gap-3.5 shadow-xl">
                 <div class="p-3 bg-emerald-500/10 text-emerald-400 rounded-xl border border-emerald-500/10 shadow-inner">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                 </div>
@@ -90,7 +88,7 @@
                     <h3 id="statAvailable" class="text-2xl font-black text-emerald-400 mt-0.5 tracking-tight">0</h3>
                 </div>
             </div>
-            <div class="bg-slate-900/40 backdrop-blur-md p-4 rounded-2xl border border-white/5 flex items-center gap-3.5 shadow-xl">
+            <div class="bg-slate-900/60 backdrop-blur-md p-4 rounded-2xl border border-white/5 flex items-center gap-3.5 shadow-xl">
                 <div class="p-3 bg-amber-500/10 text-amber-400 rounded-xl border border-amber-500/10 shadow-inner">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                 </div>
@@ -99,7 +97,7 @@
                     <h3 id="statSeñado" class="text-2xl font-black text-amber-400 mt-0.5 tracking-tight">0</h3>
                 </div>
             </div>
-            <div class="bg-slate-900/40 backdrop-blur-md p-4 rounded-2xl border border-white/5 flex items-center gap-3.5 shadow-xl">
+            <div class="bg-slate-900/60 backdrop-blur-md p-4 rounded-2xl border border-white/5 flex items-center gap-3.5 shadow-xl">
                 <div class="p-3 bg-rose-500/10 text-rose-400 rounded-xl border border-rose-500/10 shadow-inner">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
                 </div>
@@ -110,8 +108,7 @@
             </div>
         </section>
 
-        <!-- FILTROS MODERNOS -->
-        <section class="bg-slate-900/20 backdrop-blur-sm p-3.5 rounded-2xl border border-white/5 shadow-lg">
+        <section class="bg-slate-900/40 backdrop-blur-md p-3.5 rounded-2xl border border-white/5 shadow-lg">
             <div class="flex flex-col sm:flex-row gap-3">
                 <div class="relative flex-1">
                     <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
@@ -130,7 +127,6 @@
             </div>
         </section>
 
-        <!-- LISTADO DE INVENTARIO -->
         <section class="bg-transparent rounded-2xl overflow-hidden">
             <div class="overflow-x-auto no-scrollbar">
                 <table class="w-full text-left border-separate border-spacing-y-2.5">
@@ -143,12 +139,11 @@
                         </tr>
                     </thead>
                     <tbody id="inventoryTableBody" class="text-sm">
-                        <!-- Las filas se inyectan dinámicamente con estética modernizada en el renderStock -->
                     </tbody>
                 </table>
             </div>
             
-            <div id="emptyState" class="hidden text-center py-16 bg-slate-900/20 border border-white/5 rounded-2xl flex flex-col items-center justify-center">
+            <div id="emptyState" class="hidden text-center py-16 bg-slate-900/40 border border-white/5 rounded-2xl flex flex-col items-center justify-center">
                 <div class="p-4 bg-slate-900/60 rounded-full border border-white/5 mb-3 text-slate-500 shadow-inner">
                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0a2 2 0 01-2 2H6a2 2 0 01-2-2m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-4V8h4m-4 5V8h-4v5m0 0H8V8h4v5"></path></svg>
                 </div>
@@ -159,7 +154,6 @@
     </main>
 
     <script>
-        // Enlace definitivo provisto por el usuario mapeado directamente a CSV
         const GOOGLE_SHEETS_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQYoywNVTQjwCasF5XWCKyRYScZbTKzH1csjkC6fOeG6kC7Cf0LKoGmisNzFjos4w/pub?output=csv";
 
         let stock = [];
@@ -171,7 +165,6 @@
                     .catch(err => console.log("Error de SW: ", err));
             }
 
-            // Primero cargar lo último que quedó en memoria local para que abra instantáneo
             const savedStock = localStorage.getItem('ag_inventario_stock');
             if (savedStock) {
                 stock = JSON.parse(savedStock);
@@ -179,7 +172,6 @@
                 renderStock(stock);
             }
             
-            // Inmediatamente ir a buscar los datos frescos a Google Drive de forma invisible
             fetchFromGoogleSheets();
         });
 
@@ -227,7 +219,6 @@
                 let anio = parseInt(getVal(["AÑO", "ANIO", "MODELO_AÑO"])) || 2010;
                 let km = parseInt(String(getVal(["KILOMETROS", "KM", "KILÓMETROS"])).replace(/[^0-9]/g, '')) || 0;
 
-                // Limpieza inteligente del estado de disponibilidad
                 let rawEstado = (getVal(["DISPONIBILIDAD", "ESTADO", "SITUACION"]) || "DISPONIBLE").toUpperCase().trim();
                 let estadoFinal = "DISPONIBLE";
                 if (rawEstado === "SEÑADO" || rawEstado === "S") {
@@ -257,99 +248,4 @@
         function calculateDashboard() {
             document.getElementById('statTotalStock').innerText = stock.length;
             document.getElementById('statAvailable').innerText = stock.filter(c => c.disponibilidad === "DISPONIBLE").length;
-            document.getElementById('statSeñado').innerText = stock.filter(c => c.disponibilidad === "SEÑADO").length;
-            document.getElementById('statVendido').innerText = stock.filter(c => c.disponibilidad === "VENDIDO").length;
-        }
-
-        function renderStock(carsToRender) {
-            const tbody = document.getElementById('inventoryTableBody');
-            const emptyState = document.getElementById('emptyState');
-            tbody.innerHTML = "";
-
-            if (carsToRender.length === 0) {
-                emptyState.classList.remove('hidden');
-                return;
-            }
-            emptyState.classList.add('hidden');
-
-            carsToRender.forEach(car => {
-                let rowBg = "bg-slate-900/30 border-white/5 hover:bg-slate-900/60";
-                let badgeText = "DISPONIBLE";
-                let badgeClass = "bg-emerald-500/10 text-emerald-400 border-emerald-500/20 shadow-md shadow-emerald-950/20";
-                let priceColor = "text-white";
-                let modelColor = "text-white";
-                
-                if (car.disponibilidad === "SEÑADO") {
-                    badgeText = "SEÑADO";
-                    badgeClass = "bg-amber-500/10 text-amber-400 border-amber-500/20 shadow-md shadow-amber-950/20";
-                } else if (car.disponibilidad === "VENDIDO") {
-                    badgeText = "VENDIDO";
-                    badgeClass = "bg-slate-950 text-slate-500 border-white/5";
-                    rowBg = "bg-slate-950/20 border-white/5 opacity-40 line-through decoration-slate-600";
-                    priceColor = "text-slate-400";
-                    modelColor = "text-slate-400";
-                }
-
-                const tr = document.createElement('tr');
-                tr.className = `transition-all border rounded-2xl ${rowBg} shadow-sm`;
-                tr.innerHTML = `
-                    <td class="py-4 pl-5 rounded-l-2xl">
-                        <div class="font-bold ${modelColor} tracking-wide text-sm sm:text-base">${car.modelo}</div>
-                        <div class="font-mono text-[11px] text-slate-400 mt-1 flex items-center gap-2 flex-wrap">
-                            <span class="bg-slate-950/60 px-2 py-0.5 rounded-lg border border-white/5 font-semibold tracking-wider text-slate-300 shadow-inner">${car.patente}</span>
-                            <span class="md:hidden text-slate-500 font-sans font-medium">• ${car.anio} • ${car.kilometros.toLocaleString()} km</span>
-                        </div>
-                    </td>
-                    <td class="py-4 px-4 hidden md:table-cell">
-                        <div class="font-bold text-slate-300 text-sm">${car.anio}</div>
-                        <div class="text-xs text-slate-500 mt-0.5 font-medium">${car.kilometros.toLocaleString()} km <span class="text-slate-600">•</span> ${car.combustible}</div>
-                    </td>
-                    <td class="py-4 px-4">
-                        <div class="font-black ${priceColor} text-sm sm:text-base tracking-tight">$${car.precio.toLocaleString('es-AR')}</div>
-                        <div class="text-[11px] font-semibold text-slate-400 mt-0.5 bg-slate-950/30 inline-block px-1.5 py-0.5 rounded-md border border-white/5">Ant: <span class="text-rose-400/90">$${car.anticipo.toLocaleString('es-AR')}</span></div>
-                    </td>
-                    <td class="py-4 pr-5 text-center rounded-r-2xl">
-                        <span class="inline-flex px-3 py-1 text-[10px] font-extrabold rounded-full border tracking-wider ${badgeClass}">
-                            ${badgeText}
-                        </span>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        function applyFilters() {
-            const q = document.getElementById('filterSearch').value.toLowerCase().trim();
-            const state = document.getElementById('filterState').value;
-
-            const res = stock.filter(c => {
-                const matchQ = c.modelo.toLowerCase().includes(q) || c.patente.toLowerCase().includes(q);
-                const matchS = !state || c.disponibilidad === state;
-                return matchQ && matchS;
-            });
-
-            renderStock(res);
-        }
-
-        // Instalación PWA
-        let deferredPrompt;
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            document.getElementById('pwaInstallBtn').classList.remove('hidden');
-        });
-
-        document.getElementById('pwaInstallBtn').addEventListener('click', () => {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                deferredPrompt.userChoice.then((choiceResult) => {
-                    if (choiceResult.outcome === 'accepted') {
-                        document.getElementById('pwaInstallBtn').classList.add('hidden');
-                    }
-                    deferredPrompt = null;
-                });
-            }
-        });
-    </script>
-</body>
-</html>
+            document.getElementById('statSeñado').innerText = stock.filter(c
