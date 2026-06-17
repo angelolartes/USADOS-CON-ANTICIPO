@@ -34,7 +34,7 @@
         <div class="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
             <div class="flex items-center gap-4">
                 <div class="bg-white p-1 rounded-xl shadow-inner flex items-center justify-center overflow-hidden w-12 h-12 border border-red-800/20 shrink-0">
-                    <img src="Icono.png" alt="Logo AG" class="w-full h-full object-contain" onerror="this.src='https://placehold.co/100x100/ffffff/450a0a?text=AG'">
+                    <img src="https://i.postimg.cc/44D1NW6Q/Icono.png" alt="Logo AG" class="w-full h-full object-contain" onerror="this.src='https://placehold.co/100x100/ffffff/450a0a?text=AG'">
                 </div>
                 <div>
                     <h1 class="text-lg font-black tracking-wider text-white flex items-center gap-2">
@@ -60,7 +60,7 @@
 
     <main class="flex-1 max-w-7xl w-full mx-auto px-4 py-6 flex flex-col gap-6">
         
-        <div id="syncStatus" class="text-center text-xs text-slate-400 bg-slate-800/40 py-1.5 rounded-xl border border-slate-800 hidden">
+        <div id="syncStatus" class="text-center text-xs text-slate-400 bg-slate-800/40 py-1.5 rounded-xl border border-slate-800 hidden animate-pulse">
             Cargando inventario desde Drive en tiempo real...
         </div>
 
@@ -133,8 +133,8 @@
                                 <div class="flex items-center gap-1.5">
                                     <span>Precio / Anticipo</span>
                                     <svg id="priceEyeIcon" class="w-3.5 h-3.5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path id="eyePathOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                        <path id="eyePathOpenOuter" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                        <path id="eyePath" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                                     </svg>
                                 </div>
                             </th>
@@ -157,7 +157,6 @@
         const GOOGLE_SHEETS_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQYoywNVTQjwCasF5XWCKyRYScZbTKzH1csjkC6fOeG6kC7Cf0LKoGmisNzFjos4w/pub?output=csv";
 
         let stock = [];
-        // Estado global para saber si los precios están ocultos o no
         let hidePricesStatus = false;
 
         window.addEventListener('DOMContentLoaded', () => {
@@ -186,21 +185,24 @@
             const statusDiv = document.getElementById('syncStatus');
             const syncIcon = document.getElementById('syncIcon');
             
-            statusDiv.classList.remove('hidden');
-            if(syncIcon) syncIcon.classList.add('animate-spin');
+            if (statusDiv) statusDiv.classList.remove('hidden');
+            if (syncIcon) syncIcon.classList.add('animate-spin');
 
             Papa.parse(GOOGLE_SHEETS_CSV_URL, {
                 download: true,
                 header: true,
                 skipEmptyLines: true,
                 complete: function(results) {
-                    statusDiv.classList.add('hidden');
-                    if(syncIcon) syncIcon.classList.remove('animate-spin');
+                    if (statusDiv) statusDiv.classList.add('hidden');
+                    if (syncIcon) syncIcon.classList.remove('animate-spin');
                     processRawData(results.data);
                 },
                 error: function(err) {
-                    statusDiv.innerText = "Error al conectar con Drive. Mostrando datos locales.";
-                    if(syncIcon) syncIcon.classList.remove('animate-spin');
+                    if (statusDiv) {
+                        statusDiv.innerText = "Error al conectar con Drive. Mostrando datos locales.";
+                        statusDiv.classList.remove('hidden');
+                    }
+                    if (syncIcon) syncIcon.classList.remove('animate-spin');
                     console.error(err);
                 }
             });
@@ -265,7 +267,6 @@
             }
             emptyState.classList.add('hidden');
 
-            // Evaluamos la clase de desenfoque según el estado del botón general
             const blurClass = hidePricesStatus ? "blur-md select-none pointer-events-none" : "";
 
             carsToRender.forEach(car => {
@@ -316,12 +317,50 @@
             const icon = document.getElementById('priceEyeIcon');
             
             if (hidePricesStatus) {
-                // Cambiar el SVG al de un ojo tachado (Oculto)
                 icon.innerHTML = `
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858-.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18"></path>
                 `;
             } else {
-                // Volver al SVG del ojo abierto (Visible)
                 icon.innerHTML = `
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                `;
+            }
+
+            applyFilters();
+        }
+
+        function applyFilters() {
+            const q = document.getElementById('filterSearch').value.toLowerCase().trim();
+            const state = document.getElementById('filterState').value;
+
+            const res = stock.filter(c => {
+                const matchQ = c.modelo.toLowerCase().includes(q) || c.patente.toLowerCase().includes(q);
+                const matchS = !state || c.disponibilidad === state;
+                return matchQ && matchS;
+            });
+
+            renderStock(res);
+        }
+
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            document.getElementById('pwaInstallBtn').classList.remove('hidden');
+        });
+
+        document.getElementById('pwaInstallBtn').addEventListener('click', () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        document.getElementById('pwaInstallBtn').classList.add('hidden');
+                    }
+                    deferredPrompt = null;
+                });
+            }
+        });
+    </script>
+</body>
+</html>
