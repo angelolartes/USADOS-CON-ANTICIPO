@@ -39,7 +39,7 @@
                 </div>
                 <div class="flex flex-col">
                     <h1 class="text-base sm:text-lg font-black tracking-wider text-white flex items-center gap-1.5 whitespace-nowrap">
-                        AUTOMOBILI <span class="bg-red-600/30 text-red-200 text-[10px] font-bold px-1.5 py-0.5 rounded border border-red-500/30">GROUP</span>
+                        AUTOMOBILI <span class="bg-red-600/30 text-red-200 text-[10px] font-bold px-1.5 py-0.5 rounded border border-red-500/30">GESTOR</span>
                     </h1>
                     <p class="text-xxs sm:text-xs text-red-200/70 font-medium whitespace-nowrap">Panel Conectado a Google Drive</p>
                 </div>
@@ -147,7 +147,7 @@
                         </tr>
                     </thead>
                     <tbody id="inventoryTableBody" class="divide-y divide-slate-700/60 text-sm">
-                        </tbody>
+                    </tbody>
                 </table>
             </div>
             
@@ -207,7 +207,7 @@
                         statusDiv.innerText = "Error al conectar con Drive. Mostrando datos locales.";
                         statusDiv.classList.remove('hidden');
                     }
-                    if (syncIcon) syncIcon.classList.remove('animate-spin');
+                    if (syncIcon) syncIcon.className = syncIcon.className.replace('animate-spin', '');
                     console.error(err);
                 }
             });
@@ -316,23 +316,8 @@
             });
         }
 
-        // Función corregida: oculta/muestra sin alterar ningún icono inexistente
-function togglePricesVisibility() {
-    hidePricesStatus = !hidePricesStatus; 
-    applyFilters();
-}
-            
-            if (hidePricesStatus) {
-                icon.innerHTML = `
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858-.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18"></path>
-                `;
-            } else {
-                icon.innerHTML = `
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-                `;
-            }
-
+        function togglePricesVisibility() {
+            hidePricesStatus = !hidePricesStatus; 
             applyFilters();
         }
 
