@@ -140,14 +140,8 @@
                         <tr class="bg-slate-900/50 text-slate-400 text-xxs font-extrabold uppercase tracking-wider border-b border-slate-700">
                             <th class="py-4 px-4">Modelo / Patente</th>
                             <th class="py-4 px-4 hidden md:table-cell">Año / KM</th>
-                            <th class="py-4 px-4 select-none cursor-pointer hover:bg-slate-900/80 transition-colors" onclick="togglePricesVisibility()">
-                                <div class="flex items-center gap-1.5">
-                                    <span>Precio / Anticipo</span>
-                                    <svg id="priceEyeIcon" class="w-3.5 h-3.5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path id="eyePath" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-                                    </svg>
-                                </div>
+                            <th class="py-4 px-4 select-none cursor-default hover:bg-slate-900/10 transition-colors" onclick="togglePricesVisibility()">
+                               <span>Precio / Anticipo</span>
                             </th>
                             <th class="py-4 px-4 text-center">Estado</th>
                         </tr>
@@ -322,10 +316,11 @@
             });
         }
 
-        function togglePricesVisibility() {
-            hidePricesStatus = !hidePricesStatus;
-            
-            const icon = document.getElementById('priceEyeIcon');
+        // Función corregida: oculta/muestra sin alterar ningún icono inexistente
+function togglePricesVisibility() {
+    hidePricesStatus = !hidePricesStatus; 
+    applyFilters();
+}
             
             if (hidePricesStatus) {
                 icon.innerHTML = `
