@@ -129,7 +129,15 @@
                         <tr class="bg-slate-900/50 text-slate-400 text-xxs font-extrabold uppercase tracking-wider border-b border-slate-700">
                             <th class="py-4 px-4">Modelo / Patente</th>
                             <th class="py-4 px-4 hidden md:table-cell">Año / KM</th>
-                            <th class="py-4 px-4">Precio / Anticipo</th>
+                            <th class="py-4 px-4 select-none cursor-pointer hover:bg-slate-900/80 transition-colors" onclick="togglePricesVisibility()">
+                                <div class="flex items-center gap-1.5">
+                                    <span>Precio / Anticipo</span>
+                                    <svg id="priceEyeIcon" class="w-3.5 h-3.5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path id="eyePathOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                        <path id="eyePathOpenOuter" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                    </svg>
+                                </div>
+                            </th>
                             <th class="py-4 px-4 text-center">Estado</th>
                         </tr>
                     </thead>
@@ -146,10 +154,11 @@
     </main>
 
     <script>
-        // Enlace definitivo provisto por el usuario mapeado directamente a CSV
         const GOOGLE_SHEETS_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQYoywNVTQjwCasF5XWCKyRYScZbTKzH1csjkC6fOeG6kC7Cf0LKoGmisNzFjos4w/pub?output=csv";
 
         let stock = [];
+        // Estado global para saber si los precios están ocultos o no
+        let hidePricesStatus = false;
 
         window.addEventListener('DOMContentLoaded', () => {
             if ('serviceWorker' in navigator) {
@@ -158,7 +167,6 @@
                     .catch(err => console.log("Error de SW: ", err));
             }
 
-            // Primero cargar lo último que quedó en memoria local para que abra instantáneo
             const savedStock = localStorage.getItem('ag_inventario_stock');
             if (savedStock) {
                 stock = JSON.parse(savedStock);
@@ -166,7 +174,6 @@
                 renderStock(stock);
             }
             
-            // Inmediatamente ir a buscar los datos frescos a Google Drive de forma invisible
             fetchFromGoogleSheets();
         });
 
@@ -214,7 +221,6 @@
                 let anio = parseInt(getVal(["AÑO", "ANIO", "MODELO_AÑO"])) || 2010;
                 let km = parseInt(String(getVal(["KILOMETROS", "KM", "KILÓMETROS"])).replace(/[^0-9]/g, '')) || 0;
 
-                // Limpieza inteligente del estado de disponibilidad
                 let rawEstado = (getVal(["DISPONIBILIDAD", "ESTADO", "SITUACION"]) || "DISPONIBLE").toUpperCase().trim();
                 let estadoFinal = "DISPONIBLE";
                 if (rawEstado === "SEÑADO" || rawEstado === "S") {
@@ -259,6 +265,9 @@
             }
             emptyState.classList.add('hidden');
 
+            // Evaluamos la clase de desenfoque según el estado del botón general
+            const blurClass = hidePricesStatus ? "blur-md select-none pointer-events-none" : "";
+
             carsToRender.forEach(car => {
                 let rowBg = "hover:bg-slate-800/40";
                 let badgeText = "DISPONIBLE";
@@ -287,7 +296,7 @@
                         <div class="font-semibold text-slate-200">${car.anio}</div>
                         <div class="text-xs text-slate-400">${car.kilometros.toLocaleString()} km • ${car.combustible}</div>
                     </td>
-                    <td class="py-3 px-4">
+                    <td class="py-3 px-4 transition-all duration-200 ${blurClass}">
                         <div class="font-black text-white">$${car.precio.toLocaleString('es-AR')}</div>
                         <div class="text-xs text-slate-400">Ant: $${car.anticipo.toLocaleString('es-AR')}</div>
                     </td>
@@ -301,38 +310,18 @@
             });
         }
 
-        function applyFilters() {
-            const q = document.getElementById('filterSearch').value.toLowerCase().trim();
-            const state = document.getElementById('filterState').value;
-
-            const res = stock.filter(c => {
-                const matchQ = c.modelo.toLowerCase().includes(q) || c.patente.toLowerCase().includes(q);
-                const matchS = !state || c.disponibilidad === state;
-                return matchQ && matchS;
-            });
-
-            renderStock(res);
-        }
-
-        // Instalación PWA
-        let deferredPrompt;
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            document.getElementById('pwaInstallBtn').classList.remove('hidden');
-        });
-
-        document.getElementById('pwaInstallBtn').addEventListener('click', () => {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                deferredPrompt.userChoice.then((choiceResult) => {
-                    if (choiceResult.outcome === 'accepted') {
-                        document.getElementById('pwaInstallBtn').classList.add('hidden');
-                    }
-                    deferredPrompt = null;
-                });
-            }
-        });
-    </script>
-</body>
-</html>
+        function togglePricesVisibility() {
+            hidePricesStatus = !hidePricesStatus;
+            
+            const icon = document.getElementById('priceEyeIcon');
+            
+            if (hidePricesStatus) {
+                // Cambiar el SVG al de un ojo tachado (Oculto)
+                icon.innerHTML = `
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858-.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18"></path>
+                `;
+            } else {
+                // Volver al SVG del ojo abierto (Visible)
+                icon.innerHTML = `
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.
