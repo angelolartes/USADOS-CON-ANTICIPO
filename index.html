@@ -31,26 +31,42 @@
 <body class="bg-slate-900 text-slate-100 min-h-full flex flex-col font-sans selection:bg-red-800 selection:text-white">
 
     <header class="sticky top-0 z-40 bg-gradient-to-r from-red-950 via-red-900 to-rose-950 border-b border-red-900/40 shadow-xl">
-        <div class="flex items-center gap-2">
-    <button onclick="fetchFromGoogleSheets()" class="flex items-center gap-1.5 bg-emerald-700 hover:bg-emerald-600 text-white px-3 py-2 rounded-xl text-xs font-bold shadow-lg shadow-emerald-900/30 transition-all active:scale-95">
-        <svg id="syncIcon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.253 8H18"></path></svg>
-        <span class="hidden sm:inline">Sincronizar Drive</span>
-        <span class="sm:hidden">Sincronizar</span>
-    </button>
-    
-    <a href="https://docs.google.com/spreadsheets/d/15q6vz0bTlKgCqW13OW4qJz3v5-iVbmeF/edit?gid=2132930178#gid=2132930178" target="_blank" class="flex items-center gap-1.5 bg-blue-700 hover:bg-blue-600 text-white px-3 py-2 rounded-xl text-xs font-bold shadow-lg shadow-blue-900/30 transition-all active:scale-95">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
-        </svg>
-        <span class="hidden sm:inline">Editar Excel</span>
-        <span class="sm:hidden">Excel</span>
-    </a>
-    
-    <button id="pwaInstallBtn" class="hidden flex items-center gap-1.5 bg-amber-600 hover:bg-amber-500 text-white px-3 py-2 rounded-xl text-xs font-bold shadow-lg transition-all">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
-        <span>Instalar App</span>
-    </button>
-</div>
+        <div class="max-w-7xl mx-auto px-4 min-h-[5rem] py-3 flex flex-row items-center justify-between gap-4">
+            
+            <div class="flex items-center gap-3 shrink-0">
+                <div class="bg-white p-1 rounded-xl shadow-inner flex items-center justify-center overflow-hidden w-12 h-12 border border-red-800/20 shrink-0">
+                    <img src="https://i.postimg.cc/44D1NW6Q/Icono.png" alt="Logo AG" class="w-full h-full object-contain" onerror="this.src='https://placehold.co/100x100/ffffff/450a0a?text=AG'">
+                </div>
+                <div class="flex flex-col">
+                    <h1 class="text-base sm:text-lg font-black tracking-wider text-white flex items-center gap-1.5 whitespace-nowrap">
+                        AUTOMOBILI <span class="bg-red-600/30 text-red-200 text-[10px] font-bold px-1.5 py-0.5 rounded border border-red-500/30">GESTOR</span>
+                    </h1>
+                    <p class="text-xxs sm:text-xs text-red-200/70 font-medium whitespace-nowrap">Panel Conectado a Google Drive</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-1.5 sm:gap-2 shrink">
+                <button onclick="fetchFromGoogleSheets()" class="flex items-center gap-1 bg-emerald-700 hover:bg-emerald-600 text-white px-2.5 sm:px-3 py-2 rounded-xl text-xxs sm:text-xs font-bold shadow-lg shadow-emerald-900/30 transition-all active:scale-95 whitespace-nowrap">
+                    <svg id="syncIcon" class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.253 8H18"></path></svg>
+                    <span class="hidden md:inline">Sincronizar Drive</span>
+                    <span class="md:hidden">Sincro</span>
+                </button>
+                
+                <a href="https://docs.google.com/spreadsheets/d/15q6vz0bTlKgCqW13OW4qJz3v5-iVbmeF/edit?gid=2132930178#gid=2132930178" target="_blank" class="flex items-center gap-1 bg-blue-700 hover:bg-blue-600 text-white px-2.5 sm:px-3 py-2 rounded-xl text-xxs sm:text-xs font-bold shadow-lg shadow-blue-900/30 transition-all active:scale-95 whitespace-nowrap">
+                    <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                    </svg>
+                    <span class="hidden md:inline">Editar Excel</span>
+                    <span class="md:hidden">Excel</span>
+                </a>
+                
+                <button id="pwaInstallBtn" class="hidden flex items-center gap-1 bg-amber-600 hover:bg-amber-500 text-white px-2.5 sm:px-3 py-2 rounded-xl text-xxs sm:text-xs font-bold shadow-lg transition-all whitespace-nowrap">
+                    <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                    <span>Instalar</span>
+                </button>
+            </div>
+
+        </div>
     </header>
 
     <main class="flex-1 max-w-7xl w-full mx-auto px-4 py-6 flex flex-col gap-6">
