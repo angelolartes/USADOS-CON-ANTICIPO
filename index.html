@@ -286,8 +286,6 @@
             }
             emptyState.classList.add('hidden');
 
-            const blurClass = hidePricesStatus ? "blur-md select-none pointer-events-none" : "";
-
             carsToRender.forEach(car => {
                 let rowBg = "hover:bg-slate-800/40";
                 let badgeText = "DISPONIBLE";
@@ -300,6 +298,20 @@
                     badgeText = "VENDIDO";
                     badgeClass = "bg-slate-900 text-slate-500 border border-slate-800";
                     rowBg = "bg-slate-900/30 text-slate-500 line-through decoration-slate-700";
+                }
+
+                // Definimos qué mostrar en la celda de precio según el estado de visibilidad
+                let contenidoPrecio = "";
+                if (hidePricesStatus) {
+                    contenidoPrecio = `
+                        <div class="text-xs font-semibold text-slate-500 tracking-wide">👁️ Ver Precio</div>
+                        <div class="text-[10px] text-slate-600">Oculto</div>
+                    `;
+                } else {
+                    contenidoPrecio = `
+                        <div class="font-black text-white">${car.precio > 0 ? '$' + car.precio.toLocaleString('es-AR') : 'Consultar'}</div>
+                        <div class="text-xs text-slate-400">${car.anticipo > 0 ? 'Ant: $' + car.anticipo.toLocaleString('es-AR') : 'Sin anticipo'}</div>
+                    `;
                 }
 
                 const tr = document.createElement('tr');
@@ -316,9 +328,8 @@
                         <div class="font-semibold text-slate-200">${car.anio}</div>
                         <div class="text-xs text-slate-400">${car.kilometros.toLocaleString('es-AR')} km • ${car.combustible}</div>
                     </td>
-                    <td class="py-3 px-4 transition-all duration-200 ${blurClass}">
-                        <div class="font-black text-white">${car.precio > 0 ? '$' + car.precio.toLocaleString('es-AR') : 'Consultar'}</div>
-                        <div class="text-xs text-slate-400">${car.anticipo > 0 ? 'Ant: $' + car.anticipo.toLocaleString('es-AR') : 'Sin anticipo'}</div>
+                    <td class="py-3 px-4 cursor-pointer select-none" onclick="togglePricesVisibility()">
+                        ${contenidoPrecio}
                     </td>
                     <td class="py-3 px-4 text-center">
                         <span class="inline-block px-2.5 py-1 text-[10px] font-extrabold rounded-md ${badgeClass}">
